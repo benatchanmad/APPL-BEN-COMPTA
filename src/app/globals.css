@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #F4F6FA;
+  --foreground: #101B35;
+  --primary: #101B35;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1D3157;
+  --gold: #D4AF37;
+  --gold-hover: #B89425;
+  --gold-light: #FAF6E8;
+  --card: #FFFFFF;
+  --card-foreground: #101B35;
+  --border: #E2E8F0;
+  --radius: 0.625rem;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for data tables and sidebar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Gold Badge & Highlights */
+.gold-badge {
+  background: linear-gradient(135deg, #FAF6E8 0%, #F5ECB9 100%);
+  color: #7A5E0B;
+  border: 1px solid #D4AF37;
+}
+
+.gold-gradient-btn {
+  background: linear-gradient(135deg, #D4AF37 0%, #B89425 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+  transition: all 0.2s ease;
+}
+
+.gold-gradient-btn:hover {
+  background: linear-gradient(135deg, #E2BF48 0%, #A07F1B 100%);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.35);
+  transform: translateY(-1px);
+}
+
+.midnight-sidebar {
+  background: #101B35;
+  border-right: 1px solid #1D3157;
+}

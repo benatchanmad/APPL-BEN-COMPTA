@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bencomptapro_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: bencomptapro
+      POSTGRES_PASSWORD: bencompta_secret_pwd_2026
+      POSTGRES_DB: bencomptapro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bencomptapro_web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://bencomptapro:bencompta_secret_pwd_2026@db:5432/bencomptapro?schema=public"
+      JWT_SECRET: "bencomptapro_super_secret_jwt_key_2026_niger_ohada_secure_token"
+      NEXT_PUBLIC_APP_NAME: "BenComptaPro Africa"
+      NEXT_PUBLIC_DEFAULT_CURRENCY: "FCFA"
+      NEXT_PUBLIC_DEFAULT_COUNTRY: "Niger"
+      NEXT_PUBLIC_DEFAULT_VAT_RATE: 19
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
