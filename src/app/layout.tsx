@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "BenComptaPro Africa | Logiciel Comptable & Financier SaaS (SYSCOHADA)",
-  description: "Solution SaaS de comptabilité et de gestion financière conforme au SYSCOHADA Révisé pour le Niger et l'Afrique Francophone.",
+  description: "Solution SaaS de comptabilité et de gestion financière conforme au SYSCOHADA Révisé pour l'Afrique Francophone.",
 };
 
 export default function RootLayout({

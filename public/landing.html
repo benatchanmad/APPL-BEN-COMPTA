@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BenComptaPro Africa | Fini la comptabilité sur Word et Excel</title>
-  <meta name="description" content="Le premier logiciel SaaS de comptabilité et de facturation conforme au SYSCOHADA Révisé pour le Niger et l'Afrique Francophone.">
+  <title>BenComptaPro Africa | Fini la comptabilité sur Excel</title>
+  <meta name="description" content="Le premier logiciel SaaS de comptabilité et de facturation conforme au SYSCOHADA Révisé pour l'Afrique Francophone.">
   
   <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -740,6 +740,60 @@
       gap: 6px;
     }
 
+    /* Floating WhatsApp Button */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      background: #25D366;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+      transition: all 0.3s ease;
+    }
+    .whatsapp-float:hover {
+      background: #20ba59;
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 14px 30px rgba(37, 211, 102, 0.5);
+    }
+    .whatsapp-pulse {
+      position: relative;
+      display: inline-flex;
+      width: 10px;
+      height: 10px;
+    }
+    .whatsapp-pulse-ping {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #FFFFFF;
+      opacity: 0.75;
+      animation: whatsapp-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .whatsapp-pulse-dot {
+      position: relative;
+      display: inline-flex;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FFFFFF;
+    }
+    @keyframes whatsapp-ping {
+      75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
     /* Animations on Scroll */
     .fade-up {
       opacity: 0;
@@ -784,7 +838,7 @@
         </div>
         <div>
           <div class="brand-title">BenCompta<span>Pro</span></div>
-          <div class="brand-subtitle">SYSCOHADA • NIGER & AFRIQUE</div>
+          <div class="brand-subtitle">SYSCOHADA • AFRIQUE</div>
         </div>
       </a>
 
@@ -802,13 +856,8 @@
   <!-- HERO SECTION -->
   <section class="hero text-center">
     <div class="container">
-      <div class="hero-badge fade-up">
-        <span class="hero-badge-pulse"></span>
-        <span>Conforme SYSCOHADA Révisé • TVA 19% Niger</span>
-      </div>
-
       <h1 class="hero-title fade-up">
-        Fini la comptabilité sur <span class="highlight">Word et Excel</span>
+        Fini la comptabilité sur <span class="highlight">Excel</span>
       </h1>
 
       <p class="hero-subtitle fade-up">
@@ -839,7 +888,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          Essai 30 jours gratuit
+          Essai 5 jours gratuit
         </span>
         <span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
@@ -847,62 +896,6 @@
           </svg>
           Données isolées & sécurisées
         </span>
-      </div>
-
-      <!-- Mockup stylisé -->
-      <div class="mockup-wrapper fade-up" style="margin-top: 3.5rem;">
-        <div class="mockup-window">
-          <div class="mockup-header">
-            <div class="mockup-dots">
-              <span class="mockup-dot dot-red"></span>
-              <span class="mockup-dot dot-yellow"></span>
-              <span class="mockup-dot dot-green"></span>
-            </div>
-            <div class="mockup-title">BenComptaPro Africa — Tableau de Bord Direction Financière</div>
-            <div style="width: 48px;"></div>
-          </div>
-          <div class="mockup-body">
-            <div class="mockup-stats">
-              <div class="mockup-stat-card">
-                <div class="stat-label">Chiffre d'Affaires</div>
-                <div class="stat-val">25 230 000 FCFA</div>
-              </div>
-              <div class="mockup-stat-card">
-                <div class="stat-label">TVA Collectée (19%)</div>
-                <div class="stat-val gold">3 230 000 FCFA</div>
-              </div>
-              <div class="mockup-stat-card">
-                <div class="stat-label">Solde Trésorerie</div>
-                <div class="stat-val" style="color: #059669;">46 480 000 FCFA</div>
-              </div>
-              <div class="mockup-stat-card">
-                <div class="stat-label">Partie Double</div>
-                <div class="stat-val" style="font-size: 0.95rem; color: #10B981; font-weight: 700;">✓ Débit = Crédit</div>
-              </div>
-            </div>
-
-            <div class="mockup-table">
-              <div class="table-head">
-                <span>N° Facture / Écriture</span>
-                <span>Client / Tiers</span>
-                <span>Montant TTC</span>
-                <span>Statut</span>
-              </div>
-              <div class="table-row">
-                <span style="font-family: monospace; font-weight: 700;">FAC-2026-0001</span>
-                <span>NIGER TELECOMS SA</span>
-                <span style="font-weight: 800;">14 280 000 FCFA</span>
-                <span class="pill pill-green">PAYÉ (BOA)</span>
-              </div>
-              <div class="table-row">
-                <span style="font-family: monospace; font-weight: 700;">FAC-2026-0002</span>
-                <span>BSIC NIGER SA</span>
-                <span style="font-weight: 800;">5 950 000 FCFA</span>
-                <span class="pill pill-gold">PARTIEL</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -962,7 +955,7 @@
       <div class="section-header">
         <span class="section-tag">Fonctionnalités</span>
         <h2 class="section-title">Tout ce qu'il faut pour gérer vos finances avec rigueur</h2>
-        <p class="section-desc">Une plateforme moderne pensée pour les réalités économiques et comptables du Niger et de la zone OHADA.</p>
+        <p class="section-desc">Une plateforme moderne pensée pour les réalités économiques et comptables de la zone OHADA.</p>
       </div>
 
       <div class="features-grid">
@@ -988,7 +981,7 @@
             </svg>
           </div>
           <h3 class="feature-title">TVA 19% calculée automatiquement</h3>
-          <p class="feature-desc">Distinction automatique entre HT, TVA 19% et TTC. Préparation en temps réel de votre bordereau de déclaration fiscale pour la DGI Niger.</p>
+          <p class="feature-desc">Distinction automatique entre HT, TVA 19% et TTC. Préparation en temps réel de votre bordereau de déclaration fiscale pour la DGI.</p>
         </div>
 
         <!-- Carte 3 -->
@@ -1070,7 +1063,7 @@
             <div class="author-avatar">AM</div>
             <div>
               <div class="author-name">Amina Moussa</div>
-              <div class="author-role">Directrice Générale, Sahel Digital SARL • Niamey, Niger</div>
+              <div class="author-role">Directrice Générale, Sahel Digital SARL</div>
             </div>
           </div>
         </div>
@@ -1176,7 +1169,7 @@
               <span>Jusqu'à 3 utilisateurs</span>
             </li>
           </ul>
-          <a href="/login" class="btn btn-gold" style="width: 100%;">Essayer 30 Jours Gratuitement</a>
+          <a href="/login" class="btn btn-gold" style="width: 100%;">Essayer 5 Jours Gratuitement</a>
         </div>
 
         <!-- Plan Business -->
@@ -1234,9 +1227,9 @@
   <!-- FOOTER -->
   <footer>
     <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <div class="brand-logo" style="margin-bottom: 1rem;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 2.5rem;">
+        <div>
+          <div class="brand-logo" style="margin-bottom: 0.75rem;">
             <div class="logo-badge" style="width: 36px; height: 36px;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101B35" stroke-width="2.5">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -1244,41 +1237,38 @@
             </div>
             <span class="brand-title">BenCompta<span>Pro</span></span>
           </div>
-          <p style="font-size: 0.85rem; line-height: 1.6; max-width: 320px; color: #94A3B8;">
-            Le logiciel comptable SaaS de référence conforme au SYSCOHADA Révisé. Développé pour la souveraineté économique du Niger et de l'Afrique.
+          <p style="font-size: 0.85rem; line-height: 1.6; max-width: 480px; color: #94A3B8;">
+            Le logiciel comptable SaaS de référence conforme au SYSCOHADA Révisé. Développé pour la souveraineté économique de l'Afrique.
           </p>
         </div>
+      </div>
 
-        <div class="footer-col">
-          <h5>Logiciel</h5>
-          <ul>
-            <li><a href="/login">Tableau de bord</a></li>
-            <li><a href="/login">Comptabilité SYSCOHADA</a></li>
-            <li><a href="/login">Facturation TVA 19%</a></li>
-            <li><a href="/login">Bilan & Balance Générale</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h5>Ressources</h5>
-          <ul>
-            <li><a href="#problemes">Pourquoi nous</a></li>
-            <li><a href="#fonctionnalites">Fonctionnalités</a></li>
-            <li><a href="#tarifs">Grille Tarifaire</a></li>
-            <li><a href="/login">Espace Démonstration</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h5>Zone OHADA</h5>
-          <ul>
-            <li><a href="#">Niger (Siège)</a></li>
-            <li><a href="#">Sénégal</a></li>
-            <li><a href="#">Côte d'Ivoire</a></li>
-            <li><a href="#">Burkina Faso</a></li>
-          </ul>
+      <div class="footer-bottom">
+        <div>© 2026 BenComptaPro Africa. Tous droits réservés.</div>
+        <div class="made-in-africa">
+          <span>Fait avec fierté en Afrique 🌍</span>
         </div>
       </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button -->
+  <a
+    href="https://wa.me/?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20BenComptaPro"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="whatsapp-float"
+    aria-label="Discuter sur WhatsApp"
+  >
+    <span class="whatsapp-pulse">
+      <span class="whatsapp-pulse-ping"></span>
+      <span class="whatsapp-pulse-dot"></span>
+    </span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </svg>
+    <span>WhatsApp</span>
+  </a>
 
       <div class="footer-bottom">
         <div>© 2026 BenComptaPro Africa. Tous droits réservés.</div>

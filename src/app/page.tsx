@@ -40,7 +40,7 @@ export default async function HomePage() {
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-medium tracking-tight">
-              SYSCOHADA • NIGER & AFRIQUE
+              SYSCOHADA • AFRIQUE
             </div>
           </div>
         </Link>
@@ -85,15 +85,10 @@ export default async function HomePage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-5xl mx-auto relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F3DE97] text-xs font-bold uppercase tracking-wider shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
-            <span>Conforme SYSCOHADA Révisé • TVA 19% Niger</span>
-          </div>
-
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight">
             Fini la comptabilité sur{" "}
             <span className="bg-gradient-to-r from-[#FFE79A] to-[#D4AF37] bg-clip-text text-transparent">
-              Word et Excel
+              Excel
             </span>
           </h1>
 
@@ -113,7 +108,7 @@ export default async function HomePage() {
               href="/login"
               className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-bold border border-white/20 transition-all"
             >
-              Découvrir la démo Niger
+              Découvrir la démo
             </Link>
           </div>
 
@@ -122,80 +117,11 @@ export default async function HomePage() {
               <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" /> Sans carte bancaire
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" /> Essai 30 jours gratuit
+              <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" /> Essai 5 jours gratuit
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" /> Données sécurisées
             </span>
-          </div>
-
-          {/* Styled Dashboard Mockup */}
-          <div className="pt-10 max-w-4xl mx-auto">
-            <div className="bg-slate-900/60 p-3 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-xl">
-              <div className="bg-white rounded-xl overflow-hidden shadow-inner text-left text-slate-800">
-                {/* Mockup Header */}
-                <div className="bg-[#101B35] px-4 py-3 flex items-center justify-between border-b border-white/10">
-                  <div className="flex gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                  </div>
-                  <span className="text-[11px] text-slate-300 font-semibold">
-                    BenComptaPro Africa — Tableau de Bord Direction Financière
-                  </span>
-                  <div className="w-6"></div>
-                </div>
-
-                {/* Mockup Body */}
-                <div className="p-5 bg-[#F8FAFC] space-y-4">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="p-3 bg-white rounded-lg border border-slate-200">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Chiffre d&apos;Affaires</span>
-                      <span className="text-base font-extrabold text-[#101B35]">25 230 000 FCFA</span>
-                    </div>
-                    <div className="p-3 bg-white rounded-lg border border-slate-200">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">TVA Collectée (19%)</span>
-                      <span className="text-base font-extrabold text-[#D4AF37]">3 230 000 FCFA</span>
-                    </div>
-                    <div className="p-3 bg-white rounded-lg border border-slate-200">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Trésorerie BOA</span>
-                      <span className="text-base font-extrabold text-emerald-600">32 450 000 FCFA</span>
-                    </div>
-                    <div className="p-3 bg-white rounded-lg border border-slate-200">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Partie Double</span>
-                      <span className="text-xs font-bold text-emerald-700 flex items-center gap-1 mt-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Débit = Crédit
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-white rounded-lg border border-slate-200 space-y-2">
-                    <div className="flex justify-between text-xs font-bold text-slate-400 pb-2 border-b border-slate-100">
-                      <span>N° Facture / Écriture</span>
-                      <span>Client / Tiers</span>
-                      <span className="text-right">Montant TTC</span>
-                      <span className="text-center">Statut</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs py-1.5 border-b border-slate-50">
-                      <span className="font-mono font-bold text-[#101B35]">FAC-2026-0001</span>
-                      <span className="font-medium text-slate-800">NIGER TELECOMS SA</span>
-                      <span className="font-extrabold text-[#101B35] text-right">14 280 000 FCFA</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">
-                        Payé (BOA)
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs py-1.5">
-                      <span className="font-mono font-bold text-[#101B35]">FAC-2026-0002</span>
-                      <span className="font-medium text-slate-800">BSIC NIGER SA</span>
-                      <span className="font-extrabold text-[#101B35] text-right">5 950 000 FCFA</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800">
-                        Partiel
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -264,7 +190,7 @@ export default async function HomePage() {
               Tout ce qu&apos;il faut pour gérer vos finances avec rigueur
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Une plateforme moderne pensée pour les réalités économiques et comptables du Niger et de la zone OHADA.
+              Une plateforme moderne pensée pour les réalités économiques et comptables de la zone OHADA.
             </p>
           </div>
 
@@ -289,7 +215,7 @@ export default async function HomePage() {
                 2. TVA 19% calculée automatiquement
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Distinction automatique entre HT, TVA 19% et TTC. Préparation en temps réel de votre bordereau de déclaration fiscale pour la DGI Niger.
+                Distinction automatique entre HT, TVA 19% et TTC. Préparation en temps réel de votre bordereau de déclaration fiscale pour la DGI.
               </p>
             </div>
 
@@ -384,7 +310,7 @@ export default async function HomePage() {
               Adopté par les entreprises d&apos;Afrique francophone
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Découvrez les retours de directeurs financiers et chefs d&apos;entreprises au Niger, Sénégal et Côte d&apos;Ivoire.
+              Découvrez les retours de directeurs financiers et chefs d&apos;entreprises au Sénégal, en Côte d&apos;Ivoire et dans l&apos;espace OHADA.
             </p>
           </div>
 
@@ -400,7 +326,7 @@ export default async function HomePage() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-[#101B35]">Amina Moussa</h4>
-                  <p className="text-[10px] text-slate-500">Directrice Générale, Sahel Digital SARL • Niamey, Niger</p>
+                  <p className="text-[10px] text-slate-500">Directrice Générale, Sahel Digital SARL</p>
                 </div>
               </div>
             </div>
@@ -450,7 +376,7 @@ export default async function HomePage() {
             Des formules adaptées à chaque étape de votre croissance
           </h2>
           <p className="text-xs sm:text-sm text-slate-500">
-            Sans engagement. Essai de 30 jours inclus pour tester l&apos;intégralité des modules.
+            Sans engagement. Essai de 5 jours inclus pour tester l&apos;intégralité des modules.
           </p>
         </div>
 
@@ -476,7 +402,7 @@ export default async function HomePage() {
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>Calcul TVA 19% Niger</span>
+                <span>Calcul TVA 19%</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -530,7 +456,7 @@ export default async function HomePage() {
               href="/login"
               className="block w-full py-3 text-center rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B89425] text-white font-bold text-xs shadow-md hover:brightness-105 transition-all"
             >
-              Essayer 30 Jours Gratuitement
+              Essayer 5 Jours Gratuitement
             </Link>
           </div>
 
@@ -598,10 +524,10 @@ export default async function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-[#090F1E] text-slate-400 py-12 px-6 border-t border-white/5 text-xs">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
+      <footer className="bg-[#090F1E] text-slate-400 py-10 px-6 border-t border-white/5 text-xs">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 pb-6">
+          <div className="space-y-2 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2">
               <div className="w-7 h-7 rounded-lg bg-[#D4AF37] flex items-center justify-center text-[#101B35] font-bold">
                 <ShieldCheck className="w-4 h-4" />
               </div>
@@ -609,38 +535,9 @@ export default async function HomePage() {
                 BenCompta<span className="text-[#D4AF37]">Pro</span> Africa
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              Le premier logiciel comptable SaaS conforme au SYSCOHADA Révisé. Développé pour la souveraineté économique du Niger et de l&apos;Afrique.
+            <p className="text-[11px] text-slate-500 leading-relaxed max-w-md">
+              Le premier logiciel comptable SaaS conforme au SYSCOHADA Révisé. Développé pour la souveraineté économique de l&apos;Afrique.
             </p>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-3 text-xs uppercase tracking-wider">Logiciel</h4>
-            <ul className="space-y-2 text-[11px]">
-              <li><Link href="/login" className="hover:text-white">Tableau de Bord</Link></li>
-              <li><Link href="/login" className="hover:text-white">Comptabilité SYSCOHADA</Link></li>
-              <li><Link href="/login" className="hover:text-white">Facturation TVA 19%</Link></li>
-              <li><Link href="/login" className="hover:text-white">Balance & Bilan</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-3 text-xs uppercase tracking-wider">Zone OHADA</h4>
-            <ul className="space-y-2 text-[11px]">
-              <li><span className="text-slate-300">Niger (Marché initial)</span></li>
-              <li><span className="text-slate-500">Sénégal</span></li>
-              <li><span className="text-slate-500">Côte d&apos;Ivoire</span></li>
-              <li><span className="text-slate-500">Burkina Faso</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-3 text-xs uppercase tracking-wider">Accès</h4>
-            <ul className="space-y-2 text-[11px]">
-              <li><Link href="/login" className="hover:text-white">Connexion Client</Link></li>
-              <li><Link href="/register" className="hover:text-white">Créer mon Entreprise</Link></li>
-              <li><a href="/landing.html" target="_blank" className="hover:text-white text-[#D4AF37]">Version HTML Standalone</a></li>
-            </ul>
           </div>
         </div>
 
@@ -649,6 +546,27 @@ export default async function HomePage() {
           <div className="text-[#D4AF37] font-bold">Fait avec fierté en Afrique 🌍</div>
         </div>
       </footer>
+
+      {/* BOUTON FLOTTANT WHATSAPP */}
+      <a
+        href="https://wa.me/?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20BenComptaPro"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Discuter sur WhatsApp"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20ba59] text-white px-4 py-3 rounded-full shadow-2xl hover:shadow-green-500/40 hover:scale-105 active:scale-95 transition-all duration-300 group"
+      >
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+        </span>
+        <svg
+          className="w-6 h-6 fill-current transition-transform group-hover:scale-110"
+          viewBox="0 0 24 24"
+        >
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+        </svg>
+        <span className="font-bold text-sm tracking-wide">WhatsApp</span>
+      </a>
     </div>
   );
 }
