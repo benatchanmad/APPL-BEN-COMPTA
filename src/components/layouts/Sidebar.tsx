@@ -203,3 +203,4 @@ export default function Sidebar({ user, organization }: SidebarProps) {
     </aside>
   );
 }
+

@@ -108,3 +108,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Erreur création compte trésorerie." }, { status: 500 });
   }
 }
+

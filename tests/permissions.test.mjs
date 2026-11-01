@@ -42,3 +42,4 @@ test("3. Isolation multi-tenant : Filtrage strict par organizationId", () => {
   assert.equal(orgInvoices.length, 2);
   assert.equal(orgInvoices.some((i) => i.organizationId === "org-senegal-2"), false);
 });
+

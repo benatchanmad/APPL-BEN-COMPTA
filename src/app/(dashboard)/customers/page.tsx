@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Plus, Search, Mail, Phone, MapPin, Building, X, RefreshCw } from "lucide-react";
+import { Users, Plus, Search, Mail, Phone, MapPin, Building, X, RefreshCw, Pencil, Trash2 } from "lucide-react";
 import { formatFCFA } from "@/lib/utils";
 
 export default function CustomersPage() {
@@ -21,6 +21,29 @@ export default function CustomersPage() {
   const [rccm, setRccm] = useState("");
   const [paymentTermsDays, setPaymentTermsDays] = useState("30");
   const [submitting, setSubmitting] = useState(false);
+
+  // Edit customer state
+  const [editModal, setEditModal] = useState<{ open: boolean; customer: any | null }>({
+    open: false,
+    customer: null,
+  });
+  const [editName, setEditName] = useState("");
+  const [editCompanyName, setEditCompanyName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editAddress, setEditAddress] = useState("");
+  const [editCity, setEditCity] = useState("Niamey");
+  const [editNif, setEditNif] = useState("");
+  const [editRccm, setEditRccm] = useState("");
+  const [editPaymentTermsDays, setEditPaymentTermsDays] = useState("30");
+  const [editing, setEditing] = useState(false);
+
+  // Delete customer state
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; customer: any | null }>({
+    open: false,
+    customer: null,
+  });
+  const [deleting, setDeleting] = useState(false);
 
   async function loadCustomers() {
     try {
@@ -71,11 +94,94 @@ export default function CustomersPage() {
         setNif("");
         setRccm("");
         loadCustomers();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur création client.");
       }
     } catch (err) {
       console.error(err);
+      alert("Erreur de connexion");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  function openEdit(cust: any) {
+    setEditModal({ open: true, customer: cust });
+    setEditName(cust.name || "");
+    setEditCompanyName(cust.companyName || "");
+    setEditEmail(cust.email || "");
+    setEditPhone(cust.phone || "");
+    setEditAddress(cust.address || "");
+    setEditCity(cust.city || "Niamey");
+    setEditNif(cust.nif || "");
+    setEditRccm(cust.rccm || "");
+    setEditPaymentTermsDays(cust.paymentTermsDays?.toString() || "30");
+  }
+
+  async function handleUpdateCustomer(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editModal.customer) return;
+    setEditing(true);
+
+    try {
+      const res = await fetch("/api/customers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editModal.customer.id,
+          name: editName,
+          companyName: editCompanyName,
+          email: editEmail,
+          phone: editPhone,
+          address: editAddress,
+          city: editCity,
+          nif: editNif,
+          rccm: editRccm,
+          paymentTermsDays: editPaymentTermsDays,
+        }),
+      });
+
+      if (res.ok) {
+        setEditModal({ open: false, customer: null });
+        loadCustomers();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur modification client.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setEditing(false);
+    }
+  }
+
+  function openDelete(cust: any) {
+    setDeleteModal({ open: true, customer: cust });
+  }
+
+  async function handleDeleteCustomer() {
+    if (!deleteModal.customer) return;
+    setDeleting(true);
+
+    try {
+      const res = await fetch(`/api/customers?id=${deleteModal.customer.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setDeleteModal({ open: false, customer: null });
+        loadCustomers();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Impossible de supprimer ce client.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -154,19 +260,20 @@ export default function CustomersPage() {
                 <th className="py-3 px-4">NIF & RCCM</th>
                 <th className="py-3 px-4">Conditions</th>
                 <th className="py-3 px-4 text-right">Créance en Cours</th>
+                <th className="py-3 px-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400">
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
                     <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-[#D4AF37]" />
                     Chargement des clients...
                   </td>
                 </tr>
               ) : filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400">
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
                     Aucun client trouvé.
                   </td>
                 </tr>
@@ -208,6 +315,24 @@ export default function CustomersPage() {
                     <td className="py-3 px-4 text-right font-extrabold text-[#101B35]">
                       {formatFCFA(cust.balance)}
                     </td>
+                    <td className="py-3 px-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          onClick={() => openEdit(cust)}
+                          title="Modifier le client"
+                          className="p-1.5 rounded-lg bg-amber-50 hover:bg-[#D4AF37] text-amber-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openDelete(cust)}
+                          title="Supprimer le client"
+                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -218,7 +343,7 @@ export default function CustomersPage() {
 
       {/* Modal: New Customer */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-sm font-bold text-[#101B35]">
@@ -265,7 +390,7 @@ export default function CustomersPage() {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+227 20 00 00 00"
+                    placeholder="+227 20 XX XX XX"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
@@ -274,13 +399,13 @@ export default function CustomersPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">
-                    NIF (Numéro Fiscal Niger)
+                    NIF (Niger)
                   </label>
                   <input
                     type="text"
                     value={nif}
                     onChange={(e) => setNif(e.target.value)}
-                    placeholder="Ex: 56789/R"
+                    placeholder="Ex: 12345/P"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
@@ -292,10 +417,23 @@ export default function CustomersPage() {
                     type="text"
                     value={rccm}
                     onChange={(e) => setRccm(e.target.value)}
-                    placeholder="NI-NIA-2024-B-..."
+                    placeholder="NI-NIA-202X-B-XXXX"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Adresse géographique
+                </label>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Quartier Plateau, Niamey"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -307,7 +445,6 @@ export default function CustomersPage() {
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    placeholder="Niamey"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
@@ -319,8 +456,7 @@ export default function CustomersPage() {
                     type="number"
                     value={paymentTermsDays}
                     onChange={(e) => setPaymentTermsDays(e.target.value)}
-                    placeholder="30"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-bold"
                   />
                 </div>
               </div>
@@ -336,12 +472,206 @@ export default function CustomersPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold"
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
                 >
-                  {submitting ? "Enregistrement..." : "Enregistrer le client"}
+                  {submitting ? "Création..." : "Enregistrer le Client"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Modifier Client */}
+      {editModal.open && editModal.customer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-bold text-[#101B35]">
+                  Modifier la Fiche Client • {editModal.customer.code}
+                </h3>
+                <p className="text-[11px] text-slate-500">{editModal.customer.name}</p>
+              </div>
+              <button
+                onClick={() => setEditModal({ open: false, customer: null })}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateCustomer} className="space-y-3 mt-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Nom ou Raison Sociale *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Nom commercial / Sous-titre
+                </label>
+                <input
+                  type="text"
+                  value={editCompanyName}
+                  onChange={(e) => setEditCompanyName(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Téléphone
+                  </label>
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    NIF (Niger)
+                  </label>
+                  <input
+                    type="text"
+                    value={editNif}
+                    onChange={(e) => setEditNif(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    RCCM
+                  </label>
+                  <input
+                    type="text"
+                    value={editRccm}
+                    onChange={(e) => setEditRccm(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Adresse géographique
+                </label>
+                <input
+                  type="text"
+                  value={editAddress}
+                  onChange={(e) => setEditAddress(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Ville
+                  </label>
+                  <input
+                    type="text"
+                    value={editCity}
+                    onChange={(e) => setEditCity(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Délai de règlement (jours)
+                  </label>
+                  <input
+                    type="number"
+                    value={editPaymentTermsDays}
+                    onChange={(e) => setEditPaymentTermsDays(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditModal({ open: false, customer: null })}
+                  className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editing}
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
+                >
+                  {editing ? "Modification..." : "Enregistrer les modifications"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Supprimer Client */}
+      {deleteModal.open && deleteModal.customer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Supprimer le Client</h3>
+                <p className="text-[11px] text-slate-500">{deleteModal.customer.code}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Êtes-vous certain de vouloir supprimer le client{" "}
+              <strong className="text-slate-900">{deleteModal.customer.name}</strong> ?
+              Cette action est irréversible.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-slate-100 text-xs">
+              <button
+                type="button"
+                onClick={() => setDeleteModal({ open: false, customer: null })}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteCustomer}
+                disabled={deleting}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold disabled:opacity-40 shadow-sm"
+              >
+                {deleting ? "Suppression..." : "Confirmer la suppression"}
+              </button>
+            </div>
           </div>
         </div>
       )}

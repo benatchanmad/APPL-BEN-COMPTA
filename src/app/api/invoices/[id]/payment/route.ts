@@ -196,3 +196,4 @@ export async function POST(
     return NextResponse.json({ error: "Erreur lors de l'enregistrement du paiement." }, { status: 500 });
   }
 }
+

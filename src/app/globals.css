@@ -68,3 +68,46 @@ body {
   background: #101B35;
   border-right: 1px solid #1D3157;
 }
+
+/* Print Rules for Professional Invoice & Tax Documents */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide navigation, sidebar, headers, modals overlays when printing invoice */
+  header,
+  nav,
+  aside,
+  button,
+  .print\\:hidden,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Isolate printable invoice container */
+  .print-container {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #FFFFFF !important;
+  }
+
+  .print-page-break {
+    page-break-inside: avoid;
+  }
+}
+
+

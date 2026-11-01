@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building2, Plus, Search, Mail, Phone, X, RefreshCw } from "lucide-react";
+import { Building2, Plus, Search, Mail, Phone, X, RefreshCw, Pencil, Trash2 } from "lucide-react";
 import { formatFCFA } from "@/lib/utils";
 
 export default function SuppliersPage() {
@@ -10,13 +10,40 @@ export default function SuppliersPage() {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
 
+  // New Supplier State
   const [name, setName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [nif, setNif] = useState("");
   const [rccm, setRccm] = useState("");
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("Niamey");
+  const [paymentTermsDays, setPaymentTermsDays] = useState("30");
   const [submitting, setSubmitting] = useState(false);
+
+  // Edit Supplier State
+  const [editModal, setEditModal] = useState<{ open: boolean; supplier: any | null }>({
+    open: false,
+    supplier: null,
+  });
+  const [editName, setEditName] = useState("");
+  const [editCompanyName, setEditCompanyName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editNif, setEditNif] = useState("");
+  const [editRccm, setEditRccm] = useState("");
+  const [editAddress, setEditAddress] = useState("");
+  const [editCity, setEditCity] = useState("Niamey");
+  const [editPaymentTermsDays, setEditPaymentTermsDays] = useState("30");
+  const [editing, setEditing] = useState(false);
+
+  // Delete Supplier State
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; supplier: any | null }>({
+    open: false,
+    supplier: null,
+  });
+  const [deleting, setDeleting] = useState(false);
 
   async function loadSuppliers() {
     try {
@@ -44,21 +71,116 @@ export default function SuppliersPage() {
       const res = await fetch("/api/suppliers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, nif, rccm, city }),
+        body: JSON.stringify({
+          name,
+          companyName,
+          email,
+          phone,
+          nif,
+          rccm,
+          address,
+          city,
+          paymentTermsDays,
+        }),
       });
       if (res.ok) {
         setShowModal(false);
         setName("");
+        setCompanyName("");
         setEmail("");
         setPhone("");
         setNif("");
         setRccm("");
+        setAddress("");
         loadSuppliers();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur création fournisseur.");
       }
     } catch (err) {
       console.error(err);
+      alert("Erreur réseau");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  function openEdit(sup: any) {
+    setEditModal({ open: true, supplier: sup });
+    setEditName(sup.name || "");
+    setEditCompanyName(sup.companyName || "");
+    setEditEmail(sup.email || "");
+    setEditPhone(sup.phone || "");
+    setEditNif(sup.nif || "");
+    setEditRccm(sup.rccm || "");
+    setEditAddress(sup.address || "");
+    setEditCity(sup.city || "Niamey");
+    setEditPaymentTermsDays(sup.paymentTermsDays?.toString() || "30");
+  }
+
+  async function handleUpdateSupplier(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editModal.supplier) return;
+    setEditing(true);
+
+    try {
+      const res = await fetch("/api/suppliers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editModal.supplier.id,
+          name: editName,
+          companyName: editCompanyName,
+          email: editEmail,
+          phone: editPhone,
+          nif: editNif,
+          rccm: editRccm,
+          address: editAddress,
+          city: editCity,
+          paymentTermsDays: editPaymentTermsDays,
+        }),
+      });
+
+      if (res.ok) {
+        setEditModal({ open: false, supplier: null });
+        loadSuppliers();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur modification fournisseur.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setEditing(false);
+    }
+  }
+
+  function openDelete(sup: any) {
+    setDeleteModal({ open: true, supplier: sup });
+  }
+
+  async function handleDeleteSupplier() {
+    if (!deleteModal.supplier) return;
+    setDeleting(true);
+
+    try {
+      const res = await fetch(`/api/suppliers?id=${deleteModal.supplier.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setDeleteModal({ open: false, supplier: null });
+        loadSuppliers();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Impossible de supprimer ce fournisseur.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -129,19 +251,20 @@ export default function SuppliersPage() {
                 <th className="py-3 px-4">Contact</th>
                 <th className="py-3 px-4">Identifiants Fiscaux</th>
                 <th className="py-3 px-4 text-right">Dette en Cours</th>
+                <th className="py-3 px-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400">
+                  <td colSpan={6} className="py-8 text-center text-slate-400">
                     <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-[#D4AF37]" />
                     Chargement des fournisseurs...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400">
+                  <td colSpan={6} className="py-8 text-center text-slate-400">
                     Aucun fournisseur trouvé.
                   </td>
                 </tr>
@@ -152,7 +275,10 @@ export default function SuppliersPage() {
                       {fou.code}
                     </td>
                     <td className="py-3 px-4 font-bold text-slate-900">
-                      {fou.name}
+                      <div>{fou.name}</div>
+                      {fou.companyName && (
+                        <div className="text-[11px] text-slate-400">{fou.companyName}</div>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-slate-600 space-y-0.5">
                       {fou.email && (
@@ -170,9 +296,28 @@ export default function SuppliersPage() {
                     </td>
                     <td className="py-3 px-4 text-[11px] text-slate-600">
                       <div>NIF: {fou.nif || "-"}</div>
+                      <div>RCCM: {fou.rccm || "-"}</div>
                     </td>
-                    <td className="py-3 px-4 text-right font-extrabold text-slate-800">
+                    <td className="py-3 px-4 text-right font-extrabold text-rose-700">
                       {formatFCFA(fou.balance)}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          onClick={() => openEdit(fou)}
+                          title="Modifier le fournisseur"
+                          className="p-1.5 rounded-lg bg-amber-50 hover:bg-[#D4AF37] text-amber-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openDelete(fou)}
+                          title="Supprimer le fournisseur"
+                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -182,12 +327,13 @@ export default function SuppliersPage() {
         </div>
       </div>
 
+      {/* Modal: Nouveau Fournisseur */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-sm font-bold text-[#101B35]">
-                Créer un Fournisseur
+                Créer un Compte Fournisseur
               </h3>
               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-700">
                 <X className="w-5 h-5" />
@@ -196,41 +342,46 @@ export default function SuppliersPage() {
 
             <form onSubmit={handleCreateSupplier} className="space-y-3 mt-4 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Nom / Raison Sociale du Fournisseur *
-                </label>
+                <label className="block font-bold text-slate-700 mb-1">Raison Sociale / Nom *</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex: TotalEnergies Marketing Niger"
+                  placeholder="Ex: NIGELEC (Énergie du Niger)"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Désignation commerciale</label>
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  placeholder="Ex: Société Nigérienne d'Électricité"
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
-                    Email
-                  </label>
+                  <label className="block font-bold text-slate-700 mb-1">Email</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="contact@fournisseur.ne"
+                    placeholder="facturation@fournisseur.ne"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
-                    Téléphone
-                  </label>
+                  <label className="block font-bold text-slate-700 mb-1">Téléphone</label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+227 20 00 00 00"
+                    placeholder="+227 20 73 XX XX"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
@@ -238,29 +389,36 @@ export default function SuppliersPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
-                    NIF (Niger)
-                  </label>
+                  <label className="block font-bold text-slate-700 mb-1">NIF (Niger)</label>
                   <input
                     type="text"
                     value={nif}
                     onChange={(e) => setNif(e.target.value)}
-                    placeholder="00142/N"
+                    placeholder="54321/R"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
-                    Ville
-                  </label>
+                  <label className="block font-bold text-slate-700 mb-1">RCCM</label>
                   <input
                     type="text"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="Niamey"
+                    value={rccm}
+                    onChange={(e) => setRccm(e.target.value)}
+                    placeholder="NI-NIA-202X-B-XXXX"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Adresse</label>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Quartier Plateau, Niamey"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
@@ -274,12 +432,167 @@ export default function SuppliersPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold"
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
                 >
-                  {submitting ? "Enregistrement..." : "Enregistrer"}
+                  {submitting ? "Création..." : "Enregistrer Fournisseur"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Modifier Fournisseur */}
+      {editModal.open && editModal.supplier && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-bold text-[#101B35]">
+                  Modifier le Fournisseur • {editModal.supplier.code}
+                </h3>
+                <p className="text-[11px] text-slate-500">{editModal.supplier.name}</p>
+              </div>
+              <button
+                onClick={() => setEditModal({ open: false, supplier: null })}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateSupplier} className="space-y-3 mt-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Raison Sociale / Nom *</label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Désignation commerciale</label>
+                <input
+                  type="text"
+                  value={editCompanyName}
+                  onChange={(e) => setEditCompanyName(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Téléphone</label>
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">NIF (Niger)</label>
+                  <input
+                    type="text"
+                    value={editNif}
+                    onChange={(e) => setEditNif(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">RCCM</label>
+                  <input
+                    type="text"
+                    value={editRccm}
+                    onChange={(e) => setEditRccm(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Adresse</label>
+                <input
+                  type="text"
+                  value={editAddress}
+                  onChange={(e) => setEditAddress(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditModal({ open: false, supplier: null })}
+                  className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editing}
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
+                >
+                  {editing ? "Modification..." : "Enregistrer les modifications"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Supprimer Fournisseur */}
+      {deleteModal.open && deleteModal.supplier && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Supprimer le Fournisseur</h3>
+                <p className="text-[11px] text-slate-500">{deleteModal.supplier.code}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Êtes-vous certain de vouloir supprimer le fournisseur{" "}
+              <strong className="text-slate-900">{deleteModal.supplier.name}</strong> ?
+              Cette action est irréversible.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-slate-100 text-xs">
+              <button
+                type="button"
+                onClick={() => setDeleteModal({ open: false, supplier: null })}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteSupplier}
+                disabled={deleting}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold disabled:opacity-40 shadow-sm"
+              >
+                {deleting ? "Suppression..." : "Confirmer la suppression"}
+              </button>
+            </div>
           </div>
         </div>
       )}

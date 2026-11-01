@@ -144,3 +144,4 @@ export function computeTrialBalance(
     totalCreditBalance: Math.round(totalCreditBalance),
   };
 }
+

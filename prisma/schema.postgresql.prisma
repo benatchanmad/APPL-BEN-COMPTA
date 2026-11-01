@@ -620,3 +620,4 @@ model Notification {
   @@index([organizationId])
   @@index([userId])
 }
+

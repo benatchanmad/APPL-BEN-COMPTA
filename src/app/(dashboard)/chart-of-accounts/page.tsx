@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Search, Plus, Filter, Check, X, Shield, RefreshCw } from "lucide-react";
+import { BookOpen, Search, Plus, Filter, Check, X, Shield, RefreshCw, Pencil, Trash2 } from "lucide-react";
 import { SYSCOHADA_CLASSES } from "@/lib/syscohada";
 
 export default function ChartOfAccountsPage() {
@@ -20,6 +20,24 @@ export default function ChartOfAccountsPage() {
   const [isAuxiliary, setIsAuxiliary] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Edit account state
+  const [editModal, setEditModal] = useState<{ open: boolean; account: any | null }>({
+    open: false,
+    account: null,
+  });
+  const [editName, setEditName] = useState("");
+  const [editType, setEditType] = useState("ASSET");
+  const [editIsReconcilable, setEditIsReconcilable] = useState(false);
+  const [editIsAuxiliary, setEditIsAuxiliary] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+  // Delete account state
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; account: any | null }>({
+    open: false,
+    account: null,
+  });
+  const [deleting, setDeleting] = useState(false);
 
   async function fetchAccounts() {
     try {
@@ -83,6 +101,75 @@ export default function ChartOfAccountsPage() {
       setFormError("Erreur réseau.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  function openEdit(acc: any) {
+    setEditModal({ open: true, account: acc });
+    setEditName(acc.name || "");
+    setEditType(acc.type || "ASSET");
+    setEditIsReconcilable(Boolean(acc.isReconcilable));
+    setEditIsAuxiliary(Boolean(acc.isAuxiliary));
+  }
+
+  async function handleUpdateAccount(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editModal.account) return;
+    setEditing(true);
+
+    try {
+      const res = await fetch("/api/accounting/accounts", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editModal.account.id,
+          name: editName,
+          type: editType,
+          isReconcilable: editIsReconcilable,
+          isAuxiliary: editIsAuxiliary,
+        }),
+      });
+
+      if (res.ok) {
+        setEditModal({ open: false, account: null });
+        fetchAccounts();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur modification compte.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setEditing(false);
+    }
+  }
+
+  function openDelete(acc: any) {
+    setDeleteModal({ open: true, account: acc });
+  }
+
+  async function handleDeleteAccount() {
+    if (!deleteModal.account) return;
+    setDeleting(true);
+
+    try {
+      const res = await fetch(`/api/accounting/accounts?id=${deleteModal.account.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setDeleteModal({ open: false, account: null });
+        fetchAccounts();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Impossible de supprimer ce compte.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -163,19 +250,20 @@ export default function ChartOfAccountsPage() {
                 <th className="py-3 px-4">Nature</th>
                 <th className="py-3 px-4 text-center">Lettrable</th>
                 <th className="py-3 px-4 text-center">Compte Tiers</th>
+                <th className="py-3 px-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400">
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
                     <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-[#D4AF37]" />
                     Chargement des comptes...
                   </td>
                 </tr>
               ) : accounts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400">
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
                     Aucun compte trouvé.
                   </td>
                 </tr>
@@ -216,6 +304,24 @@ export default function ChartOfAccountsPage() {
                         <span className="text-slate-300">-</span>
                       )}
                     </td>
+                    <td className="py-3 px-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          onClick={() => openEdit(acc)}
+                          title="Modifier le compte"
+                          className="p-1.5 rounded-lg bg-amber-50 hover:bg-[#D4AF37] text-amber-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openDelete(acc)}
+                          title="Supprimer le compte"
+                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -226,38 +332,43 @@ export default function ChartOfAccountsPage() {
 
       {/* Modal: Create Account */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-sm font-bold text-[#101B35]">
-                Créer un Compte Comptable SYSCOHADA
+                Créer un Compte au Plan Comptable
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
+                className="text-slate-400 hover:text-slate-700"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {formError && (
-              <div className="my-3 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
+              <div className="mt-3 p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200">
                 {formError}
               </div>
             )}
 
-            <form onSubmit={handleCreateAccount} className="space-y-4 mt-4 text-xs">
+            <form onSubmit={handleCreateAccount} className="space-y-3 mt-4 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  Numéro de Compte (ex: 411120, 605400) *
+                  Numéro de Compte (6 chiffres conseillés) *
                 </label>
                 <input
                   type="text"
                   required
+                  placeholder="Ex: 411100"
                   value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="6 chiffres recommandés"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                    if (e.target.value.length > 0) {
+                      setAccountClass(e.target.value[0]);
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-mono"
                 />
               </div>
 
@@ -268,9 +379,9 @@ export default function ChartOfAccountsPage() {
                 <input
                   type="text"
                   required
+                  placeholder="Ex: Clients - Ventes de services"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex: Fournisseurs d'électricité et eau"
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                 />
               </div>
@@ -278,16 +389,16 @@ export default function ChartOfAccountsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">
-                    Classe *
+                    Classe SYSCOHADA
                   </label>
                   <select
                     value={accountClass}
                     onChange={(e) => setAccountClass(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none bg-white"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((c) => (
-                      <option key={c} value={c}>
-                        Classe {c}
+                    {SYSCOHADA_CLASSES.map((c) => (
+                      <option key={c.number} value={c.number}>
+                        Classe {c.number} ({c.label})
                       </option>
                     ))}
                   </select>
@@ -295,31 +406,33 @@ export default function ChartOfAccountsPage() {
 
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">
-                    Type de Solde *
+                    Nature Comptable
                   </label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none bg-white"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   >
-                    <option value="ASSET">Actif</option>
-                    <option value="LIABILITY">Passif</option>
-                    <option value="EQUITY">Capitaux</option>
-                    <option value="EXPENSE">Charge</option>
-                    <option value="REVENUE">Produit</option>
+                    <option value="ASSET">Actif (Bilan)</option>
+                    <option value="LIABILITY">Passif (Bilan)</option>
+                    <option value="EXPENSE">Charge (Compte 6)</option>
+                    <option value="REVENUE">Produit (Compte 7)</option>
+                    <option value="EQUITY">Capitaux Propres</option>
                   </select>
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2">
+              <div className="space-y-2 pt-2 border-t border-slate-100">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isReconcilable}
                     onChange={(e) => setIsReconcilable(e.target.checked)}
-                    className="rounded text-[#101B35] focus:ring-[#D4AF37]"
+                    className="rounded border-slate-300 text-[#101B35] focus:ring-[#D4AF37]"
                   />
-                  <span className="font-medium text-slate-700">Compte lettrable (Rapprochement)</span>
+                  <span className="font-semibold text-slate-700">
+                    Compte Lettrable (autorise le rapprochement des écritures)
+                  </span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -327,9 +440,11 @@ export default function ChartOfAccountsPage() {
                     type="checkbox"
                     checked={isAuxiliary}
                     onChange={(e) => setIsAuxiliary(e.target.checked)}
-                    className="rounded text-[#101B35] focus:ring-[#D4AF37]"
+                    className="rounded border-slate-300 text-[#101B35] focus:ring-[#D4AF37]"
                   />
-                  <span className="font-medium text-slate-700">Compte auxiliaire de tiers</span>
+                  <span className="font-semibold text-slate-700">
+                    Compte de Tiers / Auxiliaire (Clients, Fournisseurs)
+                  </span>
                 </label>
               </div>
 
@@ -344,12 +459,150 @@ export default function ChartOfAccountsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold"
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
                 >
-                  {submitting ? "Création..." : "Enregistrer le compte"}
+                  {submitting ? "Création..." : "Créer le Compte"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Modifier Compte */}
+      {editModal.open && editModal.account && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-bold text-[#101B35]">
+                  Modifier le Compte • {editModal.account.code}
+                </h3>
+                <p className="text-[11px] text-slate-500">{editModal.account.name}</p>
+              </div>
+              <button
+                onClick={() => setEditModal({ open: false, account: null })}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateAccount} className="space-y-3 mt-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Intitulé du Compte *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Nature Comptable
+                </label>
+                <select
+                  value={editType}
+                  onChange={(e) => setEditType(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                >
+                  <option value="ASSET">Actif (Bilan)</option>
+                  <option value="LIABILITY">Passif (Bilan)</option>
+                  <option value="EXPENSE">Charge (Compte 6)</option>
+                  <option value="REVENUE">Produit (Compte 7)</option>
+                  <option value="EQUITY">Capitaux Propres</option>
+                </select>
+              </div>
+
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editIsReconcilable}
+                    onChange={(e) => setEditIsReconcilable(e.target.checked)}
+                    className="rounded border-slate-300 text-[#101B35] focus:ring-[#D4AF37]"
+                  />
+                  <span className="font-semibold text-slate-700">
+                    Compte Lettrable (autorise le rapprochement des écritures)
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editIsAuxiliary}
+                    onChange={(e) => setEditIsAuxiliary(e.target.checked)}
+                    className="rounded border-slate-300 text-[#101B35] focus:ring-[#D4AF37]"
+                  />
+                  <span className="font-semibold text-slate-700">
+                    Compte de Tiers / Auxiliaire (Clients, Fournisseurs)
+                  </span>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditModal({ open: false, account: null })}
+                  className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editing}
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
+                >
+                  {editing ? "Modification..." : "Enregistrer les modifications"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Supprimer Compte */}
+      {deleteModal.open && deleteModal.account && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Supprimer le Compte</h3>
+                <p className="text-[11px] text-slate-500">{deleteModal.account.code}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Êtes-vous certain de vouloir supprimer le compte{" "}
+              <strong className="text-slate-900">{deleteModal.account.code} - {deleteModal.account.name}</strong> ?
+              Les comptes possédant des écritures comptables enregistrées ne peuvent pas être supprimés afin de préserver l&apos;intégrité SYSCOHADA.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-slate-100 text-xs">
+              <button
+                type="button"
+                onClick={() => setDeleteModal({ open: false, account: null })}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold disabled:opacity-40 shadow-sm"
+              >
+                {deleting ? "Suppression..." : "Confirmer la suppression"}
+              </button>
+            </div>
           </div>
         </div>
       )}

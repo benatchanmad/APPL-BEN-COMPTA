@@ -98,3 +98,4 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Erreur résumé tableau de bord" }, { status: 500 });
   }
 }
+

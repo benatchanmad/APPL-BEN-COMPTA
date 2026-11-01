@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CreditCard, Plus, Search, Filter, X, RefreshCw } from "lucide-react";
+import { CreditCard, Plus, Search, Filter, X, RefreshCw, Pencil, Trash2 } from "lucide-react";
 import { formatFCFA, formatDate } from "@/lib/utils";
 
 export default function ExpensesPage() {
@@ -25,6 +25,24 @@ export default function ExpensesPage() {
   const [cashAccountId, setCashAccountId] = useState("");
   const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split("T")[0]);
   const [submitting, setSubmitting] = useState(false);
+
+  // Edit Expense form
+  const [editModal, setEditModal] = useState<{ open: boolean; expense: any | null }>({
+    open: false,
+    expense: null,
+  });
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editCategoryId, setEditCategoryId] = useState("");
+  const [editSupplierId, setEditSupplierId] = useState("");
+  const [editing, setEditing] = useState(false);
+
+  // Delete Expense state
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; expense: any | null }>({
+    open: false,
+    expense: null,
+  });
+  const [deleting, setDeleting] = useState(false);
 
   async function loadData() {
     try {
@@ -112,6 +130,75 @@ export default function ExpensesPage() {
     }
   }
 
+  function openEdit(exp: any) {
+    setEditModal({ open: true, expense: exp });
+    setEditTitle(exp.title || "");
+    setEditDescription(exp.description || "");
+    setEditCategoryId(exp.categoryId || "");
+    setEditSupplierId(exp.supplierId || "");
+  }
+
+  async function handleUpdateExpense(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editModal.expense) return;
+    setEditing(true);
+
+    try {
+      const res = await fetch("/api/expenses", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editModal.expense.id,
+          title: editTitle,
+          description: editDescription,
+          categoryId: editCategoryId,
+          supplierId: editSupplierId || null,
+        }),
+      });
+
+      if (res.ok) {
+        setEditModal({ open: false, expense: null });
+        loadData();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur modification dépense.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setEditing(false);
+    }
+  }
+
+  function openDelete(exp: any) {
+    setDeleteModal({ open: true, expense: exp });
+  }
+
+  async function handleDeleteExpense() {
+    if (!deleteModal.expense) return;
+    setDeleting(true);
+
+    try {
+      const res = await fetch(`/api/expenses?id=${deleteModal.expense.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setDeleteModal({ open: false, expense: null });
+        loadData();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Erreur suppression dépense.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   const totalDepenses = expenses.reduce((sum, e) => sum + e.totalTTC, 0);
   const totalTVArecup = expenses.reduce((sum, e) => sum + e.taxAmount, 0);
 
@@ -169,19 +256,20 @@ export default function ExpensesPage() {
                 <th className="py-3 px-4 text-right">TVA Déductible</th>
                 <th className="py-3 px-4 text-right">Total TTC</th>
                 <th className="py-3 px-4 text-center">Règlement</th>
+                <th className="py-3 px-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-slate-400">
+                  <td colSpan={9} className="py-8 text-center text-slate-400">
                     <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-[#D4AF37]" />
                     Chargement des dépenses...
                   </td>
                 </tr>
               ) : expenses.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-slate-400">
+                  <td colSpan={9} className="py-8 text-center text-slate-400">
                     Aucune dépense enregistrée.
                   </td>
                 </tr>
@@ -219,6 +307,24 @@ export default function ExpensesPage() {
                         {exp.bankAccount ? `Banque: ${exp.bankAccount.bankName}` : "Caisse Espèces"}
                       </span>
                     </td>
+                    <td className="py-3 px-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          onClick={() => openEdit(exp)}
+                          title="Modifier la dépense"
+                          className="p-1.5 rounded-lg bg-amber-50 hover:bg-[#D4AF37] text-amber-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openDelete(exp)}
+                          title="Supprimer la dépense"
+                          className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-600 text-rose-700 hover:text-white transition-all shadow-sm"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -227,10 +333,10 @@ export default function ExpensesPage() {
         </div>
       </div>
 
-      {/* Modal: New Expense */}
+      {/* Modal: Nouvelle Dépense */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-sm font-bold text-[#101B35]">
                 Enregistrer une Dépense d&apos;Exploitation
@@ -248,19 +354,19 @@ export default function ExpensesPage() {
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ex: Facture NIGELEC Électricité Février"
+                  placeholder="Ex: Facture électricité NIGELEC Siège"
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Catégorie *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Catégorie Comptable *</label>
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
                     required
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-medium"
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -269,15 +375,14 @@ export default function ExpensesPage() {
                     ))}
                   </select>
                 </div>
-
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Fournisseur</label>
+                  <label className="block font-bold text-slate-700 mb-1">Fournisseur (Optionnel)</label>
                   <select
                     value={supplierId}
                     onChange={(e) => setSupplierId(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                   >
-                    <option value="">Sélectionner un fournisseur...</option>
+                    <option value="">-- Aucun / Frais divers --</option>
                     {suppliers.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name}
@@ -289,89 +394,73 @@ export default function ExpensesPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Montant Hors Taxe (FCFA) *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Montant Hors Taxe (HT) *</label>
                   <input
                     type="number"
-                    min="1"
                     required
+                    min="1"
                     value={amountHT}
                     onChange={(e) => setAmountHT(e.target.value)}
-                    placeholder="Ex: 500000"
+                    placeholder="Montant FCFA"
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-bold"
                   />
                 </div>
-
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Taux de TVA *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Taux TVA (Niger)</label>
                   <select
                     value={taxRate}
                     onChange={(e) => setTaxRate(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-bold"
                   >
-                    <option value="19">19% (TVA Normale Niger)</option>
-                    <option value="0">0% (Exonéré / Sans TVA)</option>
+                    <option value="19">19% (Taux Normal Niger)</option>
+                    <option value="0">0% (Exonéré / Non assujetti)</option>
                   </select>
                 </div>
               </div>
 
-              {/* Live Computed Summary */}
-              {numHT > 0 && (
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex justify-between">
-                  <span>TVA Déductible : <strong className="text-emerald-700">{formatFCFA(computedTax)}</strong></span>
-                  <span>Total TTC Décaissé : <strong className="text-[#101B35]">{formatFCFA(computedTTC)}</strong></span>
+              {/* Total simulation */}
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 space-y-1">
+                <div className="flex justify-between">
+                  <span>TVA Récupérable (Compte 445200) :</span>
+                  <span className="font-bold text-emerald-700">{formatFCFA(computedTax)}</span>
                 </div>
-              )}
+                <div className="flex justify-between font-extrabold text-[#101B35] pt-1 border-t border-slate-200">
+                  <span>Total TTC Décaissé :</span>
+                  <span className="text-[#D4AF37]">{formatFCFA(computedTTC)}</span>
+                </div>
+              </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Source de Décaissement *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Source de Règlement *</label>
                   <select
                     value={paymentSource}
                     onChange={(e) => setPaymentSource(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-bold"
                   >
-                    <option value="BANK">Compte Bancaire</option>
-                    <option value="CASH">Caisse Espèces</option>
+                    <option value="BANK">Banque (BOA Niger)</option>
+                    <option value="CASH">Caisse Principale (Espèces)</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Compte Spécifique *</label>
-                  {paymentSource === "BANK" ? (
-                    <select
-                      value={bankAccountId}
-                      onChange={(e) => setBankAccountId(e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
-                    >
-                      {bankAccounts.map((b) => (
-                        <option key={b.id} value={b.id}>
-                          {b.bankName}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <select
-                      value={cashAccountId}
-                      onChange={(e) => setCashAccountId(e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
-                    >
-                      {cashAccounts.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
+                  <label className="block font-bold text-slate-700 mb-1">Date de la dépense *</label>
+                  <input
+                    type="date"
+                    required
+                    value={expenseDate}
+                    onChange={(e) => setExpenseDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Date de la dépense *</label>
-                <input
-                  type="date"
-                  required
-                  value={expenseDate}
-                  onChange={(e) => setExpenseDate(e.target.value)}
+                <label className="block font-bold text-slate-700 mb-1">Description / Motif</label>
+                <textarea
+                  rows={2}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Justification de la dépense..."
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
                 />
               </div>
@@ -386,13 +475,151 @@ export default function ExpensesPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold"
+                  disabled={submitting || !amountHT}
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
                 >
-                  {submitting ? "Validation..." : "Enregistrer la dépense"}
+                  {submitting ? "Enregistrement..." : "Valider la Dépense"}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Modifier Dépense */}
+      {editModal.open && editModal.expense && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-bold text-[#101B35]">
+                  Modifier la Dépense • {editModal.expense.expenseNumber}
+                </h3>
+                <p className="text-[11px] text-slate-500">
+                  Montant : {formatFCFA(editModal.expense.totalTTC)}
+                </p>
+              </div>
+              <button
+                onClick={() => setEditModal({ open: false, expense: null })}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateExpense} className="space-y-3 mt-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Titre de la Dépense *</label>
+                <input
+                  type="text"
+                  required
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Catégorie Comptable *</label>
+                  <select
+                    value={editCategoryId}
+                    onChange={(e) => setEditCategoryId(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none font-medium"
+                  >
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Fournisseur</label>
+                  <select
+                    value={editSupplierId}
+                    onChange={(e) => setEditSupplierId(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                  >
+                    <option value="">-- Aucun / Frais divers --</option>
+                    {suppliers.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Description / Motif</label>
+                <textarea
+                  rows={3}
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#D4AF37] focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditModal({ open: false, expense: null })}
+                  className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editing}
+                  className="px-5 py-2 rounded-xl bg-[#101B35] text-white hover:bg-[#1D3157] font-bold shadow-md disabled:opacity-40"
+                >
+                  {editing ? "Modification..." : "Enregistrer les modifications"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Supprimer Dépense */}
+      {deleteModal.open && deleteModal.expense && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in-50">
+            <div className="flex items-center gap-3 text-rose-600 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Supprimer la Dépense</h3>
+                <p className="text-[11px] text-slate-500">{deleteModal.expense.expenseNumber}</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Êtes-vous sûr de vouloir supprimer cette dépense de{" "}
+              <strong className="text-slate-900">{formatFCFA(deleteModal.expense.totalTTC)}</strong> ({deleteModal.expense.title}) ?
+              Le solde de trésorerie associé (banque ou caisse) sera automatiquement réajusté.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-4 mt-4 border-t border-slate-100 text-xs">
+              <button
+                type="button"
+                onClick={() => setDeleteModal({ open: false, expense: null })}
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteExpense}
+                disabled={deleting}
+                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold disabled:opacity-40 shadow-sm"
+              >
+                {deleting ? "Suppression..." : "Confirmer la suppression"}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -65,3 +65,4 @@ export function calculateTotals(subtotalHT: number, vatRate: number = 19.0, disc
     totalTTC,
   };
 }
+

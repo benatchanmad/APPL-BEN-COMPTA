@@ -153,3 +153,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Erreur lors de la création de l'écriture." }, { status: 500 });
   }
 }
+

@@ -82,3 +82,4 @@ test("4. Contrepassation : Inversion rigoureuse Débit/Crédit pour annulation t
   assert.equal(validationReversed.totalDebit, 1785000);
   assert.equal(validationReversed.totalCredit, 1785000);
 });
+

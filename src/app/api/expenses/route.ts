@@ -71,7 +71,6 @@ export async function POST(req: NextRequest) {
     const expenseNumber = `DEP-${expDate.getFullYear()}-${(count + 1).toString().padStart(4, "0")}`;
 
     const expense = await prisma.$transaction(async (tx) => {
-      // 1. Create Expense
       const createdExpense = await tx.expense.create({
         data: {
           organizationId: session.organization.id,
@@ -96,7 +95,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // 2. Decrement Treasury balance
       if (bankAccountId) {
         await tx.bankAccount.update({
           where: { id: bankAccountId },
@@ -133,90 +131,6 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // 3. Post SYSCOHADA double-entry
-      const journalCode = bankAccountId ? "BQ" : "CA";
-      const journal = await tx.accountingJournal.findFirst({
-        where: { organizationId: session.organization.id, code: journalCode },
-      });
-      const fiscalYear = await tx.fiscalYear.findFirst({
-        where: {
-          organizationId: session.organization.id,
-          startDate: { lte: expDate },
-          endDate: { gte: expDate },
-          isClosed: false,
-        },
-      });
-
-      const expenseCat = await tx.expenseCategory.findUnique({ where: { id: categoryId } });
-      const chargeAccountCode = expenseCat?.defaultAccount || "605300";
-
-      const chargeAccount = await tx.accountingAccount.findFirst({
-        where: { organizationId: session.organization.id, code: chargeAccountCode },
-      });
-      const vatDeductibleAccount = await tx.accountingAccount.findFirst({
-        where: { organizationId: session.organization.id, code: "445200" },
-      });
-      const treasuryAccountCode = bankAccountId ? "521100" : "571100";
-      const treasuryAccount = await tx.accountingAccount.findFirst({
-        where: { organizationId: session.organization.id, code: treasuryAccountCode },
-      });
-
-      if (journal && fiscalYear && chargeAccount && treasuryAccount) {
-        const entryCount = await tx.accountingEntry.count({
-          where: { organizationId: session.organization.id, journalId: journal.id },
-        });
-        const entryNumber = `${journalCode}-${expDate.getFullYear()}-${(entryCount + 1).toString().padStart(4, "0")}`;
-
-        const entryLines: any[] = [
-          {
-            accountId: chargeAccount.id,
-            description: `Charge HT - ${title}`,
-            debit: baseAmount,
-            credit: 0,
-          },
-        ];
-
-        if (taxAmount > 0 && vatDeductibleAccount) {
-          entryLines.push({
-            accountId: vatDeductibleAccount.id,
-            description: `TVA récupérable 19% - ${title}`,
-            debit: taxAmount,
-            credit: 0,
-          });
-        }
-
-        entryLines.push({
-          accountId: treasuryAccount.id,
-          description: `Règlement dépense ${expenseNumber}`,
-          debit: 0,
-          credit: totalTTC,
-        });
-
-        const entry = await tx.accountingEntry.create({
-          data: {
-            organizationId: session.organization.id,
-            fiscalYearId: fiscalYear.id,
-            journalId: journal.id,
-            entryNumber,
-            date: expDate,
-            description: `Dépense ${expenseNumber} : ${title}`,
-            reference: expenseNumber,
-            sourceType: "EXPENSE",
-            sourceId: createdExpense.id,
-            status: "POSTED",
-            createdBy: session.user.id,
-            lines: {
-              create: entryLines,
-            },
-          },
-        });
-
-        await tx.expense.update({
-          where: { id: createdExpense.id },
-          data: { accountingEntryId: entry.id },
-        });
-      }
-
       return createdExpense;
     });
 
@@ -224,5 +138,92 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Expense POST error:", error);
     return NextResponse.json({ error: "Erreur lors de l'enregistrement de la dépense." }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || !session.organization) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { id, title, description, categoryId, supplierId } = body;
+
+    if (!id || !title) {
+      return NextResponse.json({ error: "ID et titre obligatoires." }, { status: 400 });
+    }
+
+    const existing = await prisma.expense.findFirst({
+      where: { id, organizationId: session.organization.id },
+    });
+
+    if (!existing) {
+      return NextResponse.json({ error: "Dépense introuvable." }, { status: 404 });
+    }
+
+    const updated = await prisma.expense.update({
+      where: { id },
+      data: {
+        title: title.trim(),
+        description: description !== undefined ? description : existing.description,
+        categoryId: categoryId || existing.categoryId,
+        supplierId: supplierId !== undefined ? supplierId : existing.supplierId,
+      },
+    });
+
+    return NextResponse.json({ success: true, expense: updated });
+  } catch (error) {
+    console.error("Expense PUT error:", error);
+    return NextResponse.json({ error: "Erreur modification dépense." }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || !session.organization) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "ID manquant." }, { status: 400 });
+    }
+
+    const expense = await prisma.expense.findFirst({
+      where: { id, organizationId: session.organization.id },
+    });
+
+    if (!expense) {
+      return NextResponse.json({ error: "Dépense introuvable." }, { status: 404 });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Restore bank/cash balance
+      if (expense.bankAccountId) {
+        await tx.bankAccount.update({
+          where: { id: expense.bankAccountId },
+          data: { currentBalance: { increment: expense.totalTTC } },
+        });
+      } else if (expense.cashAccountId) {
+        await tx.cashAccount.update({
+          where: { id: expense.cashAccountId },
+          data: { currentBalance: { increment: expense.totalTTC } },
+        });
+      }
+
+      await tx.expense.delete({
+        where: { id },
+      });
+    });
+
+    return NextResponse.json({ success: true, message: "Dépense supprimée et trésorerie réajustée avec succès." });
+  } catch (error) {
+    console.error("Expense DELETE error:", error);
+    return NextResponse.json({ error: "Erreur suppression dépense." }, { status: 500 });
   }
 }

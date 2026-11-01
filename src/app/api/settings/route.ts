@@ -58,3 +58,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Erreur mise à jour paramètres." }, { status: 500 });
   }
 }
+

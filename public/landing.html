@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BenComptaPro Africa | Fini la comptabilité sur Word et Excel</title>
+  <meta name="description" content="Le premier logiciel SaaS de comptabilité et de facturation conforme au SYSCOHADA Révisé pour le Niger et l'Afrique Francophone.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --midnight: #101B35;
+      --midnight-light: #1D3157;
+      --gold: #D4AF37;
+      --gold-light: #FDF9EE;
+      --gold-hover: #B89425;
+      --surface: #F4F6FA;
+      --card: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--text-main);
+      background-color: var(--surface);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(16, 27, 53, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      transition: all 0.3s ease;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #D4AF37 0%, #B89425 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .brand-title span {
+      color: var(--gold);
+    }
+    .brand-subtitle {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #94A3B8;
+      font-weight: 600;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: #CBD5E1;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    /* Buttons & Magnetic Hover */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.75rem 1.75rem;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, background 0.25s ease;
+      position: relative;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #D4AF37 0%, #B89425 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
+    }
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #E2BF48 0%, #A07F1B 100%);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.45);
+    }
+    .btn-dark {
+      background: var(--midnight);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(16, 27, 53, 0.15);
+    }
+    .btn-dark:hover {
+      background: var(--midnight-light);
+    }
+    .btn-outline-white {
+      background: transparent;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .btn-outline-white:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: radial-gradient(circle at 50% 20%, #1A2C54 0%, #101B35 70%);
+      color: #FFFFFF;
+      padding: 5rem 0 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 100px;
+      color: #F3DE97;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-badge-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      max-width: 900px;
+      margin: 0 auto 1.5rem;
+    }
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #FFE79A 0%, #D4AF37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: #94A3B8;
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+    .hero-guarantee {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      color: #94A3B8;
+      font-size: 0.75rem;
+      margin-top: 1rem;
+    }
+    .hero-guarantee span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Mockup */
+    .mockup-wrapper {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 50px rgba(212, 175, 55, 0.15);
+    }
+    .mockup-window {
+      background: #FFFFFF;
+      border-radius: 16px;
+      overflow: hidden;
+      color: var(--text-main);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    .mockup-header {
+      background: var(--midnight);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mockup-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #EF4444; }
+    .dot-yellow { background: #F59E0B; }
+    .dot-green { background: #10B981; }
+    .mockup-title {
+      color: #CBD5E1;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .mockup-body {
+      padding: 24px;
+      background: var(--surface);
+    }
+    .mockup-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .mockup-stat-card {
+      background: #FFFFFF;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .stat-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--midnight);
+      margin-top: 4px;
+    }
+    .stat-val.gold { color: var(--gold); }
+    .mockup-table {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+    .table-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .table-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      padding: 12px 0;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 100px;
+    }
+    .pill-green { background: #DEF7EC; color: #03543F; }
+    .pill-gold { background: #FAF5E9; color: #7A5E0B; }
+
+    /* Section Styling */
+    section {
+      padding: 6rem 0;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 3.5rem;
+    }
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #92731C;
+      background: #FAF6E8;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      color: var(--midnight);
+      margin-bottom: 1rem;
+    }
+    .section-desc {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* Section Problème */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .problem-card {
+      background: #FFFFFF;
+      padding: 32px;
+      border-radius: 20px;
+      border: 1px solid #FEE2E2;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      transition: transform 0.3s ease;
+    }
+    .problem-card:hover {
+      transform: translateY(-4px);
+    }
+    .problem-icon {
+      width: 52px;
+      height: 52px;
+      background: #FEF2F2;
+      color: #DC2626;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .problem-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--midnight);
+      margin-bottom: 12px;
+    }
+    .problem-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Section Fonctionnalités */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: #FFFFFF;
+      padding: 32px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(16, 27, 53, 0.03);
+    }
+    .feature-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.12);
+    }
+    .feature-icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: #F4F6FA;
+      color: var(--midnight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .feature-card:hover .feature-icon-box {
+      background: linear-gradient(135deg, #D4AF37 0%, #B89425 100%);
+      color: #FFFFFF;
+    }
+    .feature-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--midnight);
+      margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Section Comment ça marche */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      position: relative;
+    }
+    .step-card {
+      background: #FFFFFF;
+      padding: 36px 30px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .step-number {
+      width: 44px;
+      height: 44px;
+      background: var(--midnight);
+      color: var(--gold);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .step-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--midnight);
+      margin-bottom: 12px;
+    }
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Section Témoignages */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .testimonial-card {
+      background: #FFFFFF;
+      padding: 32px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .stars {
+      color: #F59E0B;
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .testimonial-quote {
+      font-size: 0.95rem;
+      color: #334155;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .author-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--midnight);
+      color: var(--gold);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      border: 2px solid var(--gold);
+    }
+    .author-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--midnight);
+    }
+    .author-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Section Tarification */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      align-items: center;
+    }
+    .pricing-card {
+      background: #FFFFFF;
+      padding: 40px 32px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .pricing-card.popular {
+      background: var(--midnight);
+      color: #FFFFFF;
+      border: 2px solid var(--gold);
+      transform: scale(1.04);
+      box-shadow: 0 20px 40px rgba(16, 27, 53, 0.25);
+    }
+    .popular-tag {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #D4AF37 0%, #B89425 100%);
+      color: #FFFFFF;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 16px;
+      border-radius: 100px;
+      box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+    }
+    .pricing-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .pricing-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .pricing-card.popular .pricing-desc {
+      color: #94A3B8;
+    }
+    .pricing-price {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .price-amount {
+      font-size: 2.25rem;
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .price-period {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .pricing-card.popular .price-period {
+      color: #94A3B8;
+    }
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.85rem;
+    }
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pricing-features svg {
+      width: 16px;
+      height: 16px;
+      color: #10B981;
+      flex-shrink: 0;
+    }
+    .pricing-card.popular .pricing-features svg {
+      color: var(--gold);
+    }
+
+    /* Section CTA Final */
+    .cta-final {
+      background: radial-gradient(circle at 50% 50%, #172745 0%, #101B35 100%);
+      color: #FFFFFF;
+      padding: 6rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-final-title {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 800;
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+    .cta-final-desc {
+      font-size: 1.1rem;
+      color: #94A3B8;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #090F1E;
+      color: #94A3B8;
+      padding: 4rem 0 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.85rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 3rem;
+    }
+    .footer-col h5 {
+      color: #FFFFFF;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-col a {
+      color: #94A3B8;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover {
+      color: var(--gold);
+    }
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .made-in-africa {
+      color: var(--gold);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Animations on Scroll */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+    @media (max-width: 600px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .pricing-card.popular {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="/" class="brand-logo">
+        <div class="logo-badge">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101B35" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">BenCompta<span>Pro</span></div>
+          <div class="brand-subtitle">SYSCOHADA • NIGER & AFRIQUE</div>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#problemes">Problèmes</a>
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#comment-ca-marche">Comment ça marche</a>
+        <a href="#tarifs">Tarifs</a>
+        <a href="/login">Connexion</a>
+        <a href="/login" class="btn btn-gold">Démarrer Gratuitement</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero text-center">
+    <div class="container">
+      <div class="hero-badge fade-up">
+        <span class="hero-badge-pulse"></span>
+        <span>Conforme SYSCOHADA Révisé • TVA 19% Niger</span>
+      </div>
+
+      <h1 class="hero-title fade-up">
+        Fini la comptabilité sur <span class="highlight">Word et Excel</span>
+      </h1>
+
+      <p class="hero-subtitle fade-up">
+        La solution logicielle tout-en-un pour générer vos factures professionnelles en FCFA, calculer la TVA à 19% sans erreur et clôturer vos exercices en toute conformité OHADA.
+      </p>
+
+      <div class="hero-cta fade-up">
+        <a href="/login" class="btn btn-gold magnetic-btn" style="font-size: 1rem; padding: 1rem 2.25rem;">
+          <span>Commencer gratuitement</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        <a href="/login" class="btn btn-outline-white">
+          <span>Découvrir la démo</span>
+        </a>
+      </div>
+
+      <div class="hero-guarantee fade-up">
+        <span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Sans carte bancaire
+        </span>
+        <span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Essai 30 jours gratuit
+        </span>
+        <span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Données isolées & sécurisées
+        </span>
+      </div>
+
+      <!-- Mockup stylisé -->
+      <div class="mockup-wrapper fade-up" style="margin-top: 3.5rem;">
+        <div class="mockup-window">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span class="mockup-dot dot-red"></span>
+              <span class="mockup-dot dot-yellow"></span>
+              <span class="mockup-dot dot-green"></span>
+            </div>
+            <div class="mockup-title">BenComptaPro Africa — Tableau de Bord Direction Financière</div>
+            <div style="width: 48px;"></div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-stats">
+              <div class="mockup-stat-card">
+                <div class="stat-label">Chiffre d'Affaires</div>
+                <div class="stat-val">25 230 000 FCFA</div>
+              </div>
+              <div class="mockup-stat-card">
+                <div class="stat-label">TVA Collectée (19%)</div>
+                <div class="stat-val gold">3 230 000 FCFA</div>
+              </div>
+              <div class="mockup-stat-card">
+                <div class="stat-label">Solde Trésorerie</div>
+                <div class="stat-val" style="color: #059669;">46 480 000 FCFA</div>
+              </div>
+              <div class="mockup-stat-card">
+                <div class="stat-label">Partie Double</div>
+                <div class="stat-val" style="font-size: 0.95rem; color: #10B981; font-weight: 700;">✓ Débit = Crédit</div>
+              </div>
+            </div>
+
+            <div class="mockup-table">
+              <div class="table-head">
+                <span>N° Facture / Écriture</span>
+                <span>Client / Tiers</span>
+                <span>Montant TTC</span>
+                <span>Statut</span>
+              </div>
+              <div class="table-row">
+                <span style="font-family: monospace; font-weight: 700;">FAC-2026-0001</span>
+                <span>NIGER TELECOMS SA</span>
+                <span style="font-weight: 800;">14 280 000 FCFA</span>
+                <span class="pill pill-green">PAYÉ (BOA)</span>
+              </div>
+              <div class="table-row">
+                <span style="font-family: monospace; font-weight: 700;">FAC-2026-0002</span>
+                <span>BSIC NIGER SA</span>
+                <span style="font-weight: 800;">5 950 000 FCFA</span>
+                <span class="pill pill-gold">PARTIEL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION PROBLÈME -->
+  <section id="problemes" style="background: #FFFFFF;">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Le Constat</span>
+        <h2 class="section-title">Les 3 pièges qui freinent les entrepreneurs africains</h2>
+        <p class="section-desc">Gérer ses comptes sur des fichiers Excel partagés ou des feuilles volantes coûte des millions en erreurs fiscales et en factures oubliées.</p>
+      </div>
+
+      <div class="problem-grid">
+        <div class="problem-card fade-up">
+          <div class="problem-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <h3 class="problem-title">Comptabilité non professionnelle</h3>
+          <p class="problem-desc">Des factures Word sans mentions légales (NIF, RCCM), sans numérotation continue et des écritures déséquilibrées qui font fuir les gros clients institutionnels.</p>
+        </div>
+
+        <div class="problem-card fade-up">
+          <div class="problem-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </div>
+          <h3 class="problem-title">Calculs manuels & erreurs de TVA</h3>
+          <p class="problem-desc">La TVA à 19% calculée à la main sur tableur provoque inévitablement des écarts comptables, des redressements coûteux et des pénalités lors des contrôles fiscaux.</p>
+        </div>
+
+        <div class="problem-card fade-up">
+          <div class="problem-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <h3 class="problem-title">Suivi des paiements impossible</h3>
+          <p class="problem-desc">Qui a payé ? Qui est en retard ? Impossible de savoir avec certitude où en sont vos créances entre vos virements BOA et les espèces en caisse.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION FONCTIONNALITÉS (4 cartes) -->
+  <section id="fonctionnalites">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Fonctionnalités</span>
+        <h2 class="section-title">Tout ce qu'il faut pour gérer vos finances avec rigueur</h2>
+        <p class="section-desc">Une plateforme moderne pensée pour les réalités économiques et comptables du Niger et de la zone OHADA.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Carte 1 -->
+        <div class="feature-card fade-up">
+          <div class="feature-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
+          <h3 class="feature-title">Comptabilité pro en 2 clics</h3>
+          <p class="feature-desc">Respect strict du principe de la partie double SYSCOHADA (Classes 1 à 8). Génération instantanée du Grand Livre, de la Balance à 6 colonnes et du Bilan.</p>
+        </div>
+
+        <!-- Carte 2 -->
+        <div class="feature-card fade-up">
+          <div class="feature-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">TVA 19% calculée automatiquement</h3>
+          <p class="feature-desc">Distinction automatique entre HT, TVA 19% et TTC. Préparation en temps réel de votre bordereau de déclaration fiscale pour la DGI Niger.</p>
+        </div>
+
+        <!-- Carte 3 -->
+        <div class="feature-card fade-up">
+          <div class="feature-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h3 class="feature-title">Suivi des paiements en temps réel</h3>
+          <p class="feature-desc">Enregistrez chaque encaissement (acompte ou solde), mettez à jour votre compte bancaire BOA ou votre caisse et générez l'écriture comptable en un clic.</p>
+        </div>
+
+        <!-- Carte 4 -->
+        <div class="feature-card fade-up">
+          <div class="feature-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Gestion de clients intégrée</h3>
+          <p class="feature-desc">Répertoire complet avec NIF, RCCM, délais de paiement, coordonnées et solde en direct de leurs créances en FCFA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION COMMENT ÇA MARCHE (3 étapes) -->
+  <section id="comment-ca-marche" style="background: #FFFFFF;">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Processus Simple</span>
+        <h2 class="section-title">Opérationnel en moins de 3 minutes</h2>
+        <p class="section-desc">Aucune compétence informatique requise. Conçu spécialement pour les dirigeants et comptables d'Afrique de l'Ouest.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card fade-up">
+          <div class="step-number">01</div>
+          <h3 class="step-title">Inscris-toi</h3>
+          <p class="step-desc">Crée ton espace entreprise sécurisé en renseignant ton nom, ton NIF et ton pays. Ton plan comptable SYSCOHADA s'initialise automatiquement.</p>
+        </div>
+
+        <div class="step-card fade-up">
+          <div class="step-number">02</div>
+          <h3 class="step-title">Crée ta première facture</h3>
+          <p class="step-desc">Choisis ton client, ajoute tes articles ou prestations. La TVA 19% est calculée et l'écriture de vente au journal VT est générée sans intervention.</p>
+        </div>
+
+        <div class="step-card fade-up">
+          <div class="step-number">03</div>
+          <h3 class="step-title">Envoie et suis les paiements</h3>
+          <p class="step-desc">Télécharge le PDF professionnel aux normes fiscales, transmets-le à ton client, encaisse le virement et visualise ta trésorerie en direct.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION TÉMOIGNAGES (3 avis africains) -->
+  <section id="temoignages">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Retours d'Expérience</span>
+        <h2 class="section-title">Adopté par les entreprises d'Afrique francophone</h2>
+        <p class="section-desc">Découvrez comment des entrepreneurs et directeurs financiers optimisent leur gestion avec BenComptaPro.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-up">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-quote">« Avant BenComptaPro, on passait 3 jours chaque fin de mois à calculer notre TVA 19% sur Excel avec la peur constante du contrôle fiscal. Maintenant, notre déclaration DGI se fait en 1 clic ! »</p>
+          </div>
+          <div class="author-info">
+            <div class="author-avatar">AM</div>
+            <div>
+              <div class="author-name">Amina Moussa</div>
+              <div class="author-role">Directrice Générale, Sahel Digital SARL • Niamey, Niger</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-quote">« La conformité SYSCOHADA et le suivi des créances ont transformé notre trésorerie. Nos factures font enfin professionnelles devant les banques et les multinationales. »</p>
+          </div>
+          <div class="author-info">
+            <div class="author-avatar">MD</div>
+            <div>
+              <div class="author-name">Mamadou Diop</div>
+              <div class="author-role">Fondateur, Teranga Logistique • Dakar, Sénégal</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-quote">« Simple, rapide et taillé sur mesure pour nos réalités en FCFA. Notre expert-comptable adore la balance à 6 colonnes et le grand livre toujours équilibré. »</p>
+          </div>
+          <div class="author-info">
+            <div class="author-avatar">KK</div>
+            <div>
+              <div class="author-name">Kouassi Konan</div>
+              <div class="author-role">Gérant, Bâtir Ivoire • Abidjan, Côte d'Ivoire</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION TARIFICATION (3 plans) -->
+  <section id="tarifs" style="background: #FFFFFF;">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Tarifs Transparents</span>
+        <h2 class="section-title">Des tarifs accessibles en FCFA pour chaque étape</h2>
+        <p class="section-desc">Sans frais cachés. Paiement flexible par virement, chèque ou Mobile Money.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Plan Gratuit -->
+        <div class="pricing-card fade-up">
+          <h3 class="pricing-title">Gratuit</h3>
+          <p class="pricing-desc">Idéal pour démarrer son activité et tester la plateforme.</p>
+          <div class="pricing-price">
+            <span class="price-amount">0</span>
+            <span class="price-period">FCFA / mois</span>
+          </div>
+          <ul class="pricing-features">
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Jusqu'à 5 factures / mois</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>1 utilisateur administrateur</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Calcul automatique TVA 19%</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Export de factures PDF</span>
+            </li>
+          </ul>
+          <a href="/login" class="btn btn-dark" style="width: 100%;">Démarrer Gratuitement</a>
+        </div>
+
+        <!-- Plan Pro (Mis en avant) -->
+        <div class="pricing-card popular fade-up">
+          <div class="popular-tag">Le Plus Choisi</div>
+          <h3 class="pricing-title">Plan Pro</h3>
+          <p class="pricing-desc">Pour les PME et entreprises en pleine croissance.</p>
+          <div class="pricing-price">
+            <span class="price-amount">5 000</span>
+            <span class="price-period">FCFA / mois</span>
+          </div>
+          <ul class="pricing-features">
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span><strong>Facturation illimitée</strong></span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Comptabilité SYSCOHADA complète</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Grand Livre & Balance à 6 colonnes</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Gestion banques & caisses</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Jusqu'à 3 utilisateurs</span>
+            </li>
+          </ul>
+          <a href="/login" class="btn btn-gold" style="width: 100%;">Essayer 30 Jours Gratuitement</a>
+        </div>
+
+        <!-- Plan Business -->
+        <div class="pricing-card fade-up">
+          <h3 class="pricing-title">Plan Business</h3>
+          <p class="pricing-desc">Pour structures exigeantes et cabinets comptables.</p>
+          <div class="pricing-price">
+            <span class="price-amount">15 000</span>
+            <span class="price-period">FCFA / mois</span>
+          </div>
+          <ul class="pricing-features">
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span><strong>Multi-utilisateurs illimités</strong></span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Gestion des immobilisations & stocks</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Rapprochement bancaire multi-comptes</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Rôles fins (Auditeur, Caissier, Admin)</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span>Support prioritaire WhatsApp & Téléphone</span>
+            </li>
+          </ul>
+          <a href="/login" class="btn btn-dark" style="width: 100%;">Choisir le Business</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION CTA FINAL -->
+  <section class="cta-final">
+    <div class="container">
+      <h2 class="cta-final-title fade-up">Rejoins les africains qui comptabilisent comme des pros</h2>
+      <p class="cta-final-desc fade-up">Passe à la vitesse supérieure dès aujourd'hui. Sécurise tes factures, tes déclarations fiscales et gagne un temps précieux chaque mois.</p>
+      <div class="fade-up">
+        <a href="/login" class="btn btn-gold magnetic-btn" style="font-size: 1.05rem; padding: 1.1rem 2.5rem;">
+          <span>Commencer gratuitement</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-logo" style="margin-bottom: 1rem;">
+            <div class="logo-badge" style="width: 36px; height: 36px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101B35" stroke-width="2.5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <span class="brand-title">BenCompta<span>Pro</span></span>
+          </div>
+          <p style="font-size: 0.85rem; line-height: 1.6; max-width: 320px; color: #94A3B8;">
+            Le logiciel comptable SaaS de référence conforme au SYSCOHADA Révisé. Développé pour la souveraineté économique du Niger et de l'Afrique.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Logiciel</h5>
+          <ul>
+            <li><a href="/login">Tableau de bord</a></li>
+            <li><a href="/login">Comptabilité SYSCOHADA</a></li>
+            <li><a href="/login">Facturation TVA 19%</a></li>
+            <li><a href="/login">Bilan & Balance Générale</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Ressources</h5>
+          <ul>
+            <li><a href="#problemes">Pourquoi nous</a></li>
+            <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+            <li><a href="#tarifs">Grille Tarifaire</a></li>
+            <li><a href="/login">Espace Démonstration</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Zone OHADA</h5>
+          <ul>
+            <li><a href="#">Niger (Siège)</a></li>
+            <li><a href="#">Sénégal</a></li>
+            <li><a href="#">Côte d'Ivoire</a></li>
+            <li><a href="#">Burkina Faso</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 BenComptaPro Africa. Tous droits réservés.</div>
+        <div class="made-in-africa">
+          <span>Fait avec fierté en Afrique 🌍</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive JavaScript: Scroll animations & Magnetic Button -->
+  <script>
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
+
+    // Magnetic button effect on hover
+    document.querySelectorAll('.magnetic-btn').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) translateY(-2px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>
+
