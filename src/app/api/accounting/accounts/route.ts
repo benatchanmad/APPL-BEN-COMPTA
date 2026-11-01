@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentSession } from "@/lib/auth";
+import { initializeOrganizationSYSCOHADA } from "@/lib/syscohada-defaults";
 
 export async function GET(req: NextRequest) {
   try {
@@ -49,6 +50,18 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
+
+    // Option de rechargement/initialisation en masse des comptes SYSCOHADA standards
+    if (body.action === "INIT_SYSCOHADA") {
+      await initializeOrganizationSYSCOHADA(prisma, session.organization.id, {
+        orgName: session.organization.name,
+      });
+      return NextResponse.json({
+        success: true,
+        message: "Les 51 comptes SYSCOHADA et les journaux ont été initialisés avec succès.",
+      });
+    }
+
     const { code, name, accountClass, type, isAuxiliary, isReconcilable } = body;
 
     if (!code || !name || !accountClass || !type) {

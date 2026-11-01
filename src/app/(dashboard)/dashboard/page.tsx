@@ -64,14 +64,14 @@ export default function DashboardPage() {
   }
 
   const metrics = data?.metrics || {
-    totalRevenue: 25230000,
-    totalExpenses: 2949000,
-    netProfit: 22281000,
-    totalTreasury: 46480000,
-    totalReceivables: 13230000,
-    totalPayables: 770000,
-    totalInvoices: 3,
-    unpaidInvoicesCount: 2,
+    totalRevenue: 0,
+    totalExpenses: 0,
+    netProfit: 0,
+    totalTreasury: 0,
+    totalReceivables: 0,
+    totalPayables: 0,
+    totalInvoices: 0,
+    unpaidInvoicesCount: 0,
   };
 
   const monthlyData = data?.monthlyData || [];

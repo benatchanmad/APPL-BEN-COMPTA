@@ -258,6 +258,23 @@ async function main() {
   }
   console.log(`✅ ${accountsData.length} comptes SYSCOHADA créés.`);
 
+  // Nettoyage préalable des données de démonstration pour ré-exécution sans conflit (idempotence)
+  await prisma.accountingEntryLine.deleteMany({ where: { entry: { organizationId: org.id } } });
+  await prisma.accountingEntry.deleteMany({ where: { organizationId: org.id } });
+  await prisma.bankTransaction.deleteMany({ where: { organizationId: org.id } });
+  await prisma.payment.deleteMany({ where: { organizationId: org.id } });
+  await prisma.invoiceItem.deleteMany({ where: { invoice: { organizationId: org.id } } });
+  await prisma.invoice.deleteMany({ where: { organizationId: org.id } });
+  await prisma.expense.deleteMany({ where: { organizationId: org.id } });
+  await prisma.stockMovement.deleteMany({ where: { organizationId: org.id } });
+  await prisma.fixedAsset.deleteMany({ where: { organizationId: org.id } });
+  await prisma.product.deleteMany({ where: { organizationId: org.id } });
+  await prisma.customer.deleteMany({ where: { organizationId: org.id } });
+  await prisma.supplier.deleteMany({ where: { organizationId: org.id } });
+  await prisma.taxDeclaration.deleteMany({ where: { organizationId: org.id } });
+  await prisma.bankAccount.deleteMany({ where: { organizationId: org.id } });
+  await prisma.cashAccount.deleteMany({ where: { organizationId: org.id } });
+
   // 9. Bank & Cash Accounts
   const boaAccount = await prisma.bankAccount.create({
     data: {

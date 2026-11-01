@@ -51,15 +51,32 @@ export async function GET(req: NextRequest) {
     // 5. Net Profit
     const netProfit = totalRevenue - totalExpenses;
 
-    // 6. Monthly Evolution (for charts)
-    const monthlyData = [
-      { month: "Jan", revenus: 5950000, depenses: 1200000, tresorerie: 27500000 },
-      { month: "Fév", revenus: 14280000, depenses: 2949000, tresorerie: 32450000 },
-      { month: "Mar", revenus: 5950000, depenses: 1850000, tresorerie: 34300000 },
-      { month: "Avr", revenus: 8500000, depenses: 2100000, tresorerie: 39500000 },
-      { month: "Mai", revenus: 11000000, depenses: 2400000, tresorerie: 46200000 },
-      { month: "Juin", revenus: 13500000, depenses: 2800000, tresorerie: 52800000 },
-    ];
+    // 6. Monthly Evolution (calcul dynamique basé sur les vraies factures et dépenses de l'entreprise)
+    const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
+    const currentYear = new Date().getFullYear();
+    const currentMonthIdx = new Date().getMonth();
+    const monthsToShow = monthNames.slice(0, Math.max(6, currentMonthIdx + 1));
+
+    const monthlyData = monthsToShow.map((mLabel, mIdx) => {
+      const monthInvoices = invoices.filter((inv) => {
+        const d = new Date(inv.date);
+        return d.getFullYear() === currentYear && d.getMonth() === mIdx;
+      });
+      const monthExpenses = expenses.filter((exp) => {
+        const d = new Date(exp.date);
+        return d.getFullYear() === currentYear && d.getMonth() === mIdx;
+      });
+
+      const rev = monthInvoices.reduce((sum, inv) => sum + inv.totalTTC, 0);
+      const dep = monthExpenses.reduce((sum, exp) => sum + exp.totalTTC, 0);
+
+      return {
+        month: mLabel,
+        revenus: rev,
+        depenses: dep,
+        tresorerie: totalTreasury,
+      };
+    });
 
     // 7. Recent Transactions & Entries
     const recentTransactions = await prisma.bankTransaction.findMany({
